@@ -1,0 +1,83 @@
+---
+title: "Effects of Voting Behaviour on Election"
+author: "Haonan Yang 1004949531"
+
+date: "12/18/2020"
+output:
+  pdf_document: default
+  html_document: default
+github: null
+---
+### Abstract 
+
+### Key Words
+2019 Canadian Election, Survey Study, Voting preference, post-stratification, Multilevel Regression.
+
+### Introduction
+People do not realize the importance of their votes to the election. One think missing his or her vote won’t change much in the outcomes. However, if hundreds or thousands of individuals thinks the same and decide not to vote. Then, the outcome of the election might not accurately reflect the actual preference by the eligible voters. 
+
+CES conducted a campaign period survey (CPS) using an online sample of 37,822 Canadians. This was done using the stratified random sampling technic. Each stratum was divided by regions and aimed to balance gender and ages. Moreover, a post-election survey (PES) was also done by re-contacting 10,340 participants from the CPS. The surveys involves varies question to collect information on age, gender, region, citizenship, participants opinion towards voting, and their preferred parties. 
+
+This paper will be focused on the outcome of the 2019 Canadian federal election based on individual’s voting behavior. We are interested in studying the result of the election based on the CES survey result of people’s preference in voting. Moreover, if everyone who participated in the online survey choose to vote, will the outcome be any different compare to the previous outcome? 
+
+
+### Methodology
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(haven)
+library(dplyr)
+```
+
+
+```{r}
+#loading and cleaning survey data
+data <- read_dta(file = "/Users/EmilyYang/Desktop/2019 Canadian Election Study - Online Survey v1.0.dta") 
+subset_1 <- data %>% select(cps19_age, cps19_citizenship, cps19_gender, cps19_province, cps19_education, cps19_v_likely, cps19_votechoice, cps19_religion,)
+subset_rename <- subset_1 %>% rename(age = cps19_age,
+                    citizenship = cps19_citizenship,
+                    gender = cps19_gender,
+                    province = cps19_province,
+                    education = cps19_education,
+                    vote = cps19_v_likely,
+                    voteparty = cps19_votechoice,
+                    religion = cps19_religion,)
+
+#removed participant who are not canadian citizen and clean up the data by removing rows with NA.
+subset_2 <- subset(subset_rename, citizenship == 4)
+survey_clean <- subset_2 %>%
+  na.omit(survey_clean)
+#glimpse(survey_clean)
+```
+
+
+
+
+```{r}
+#loading in census data
+gss_data <- read_csv(file = "/Users/EmilyYang/Desktop/gss.csv")
+census_data <- gss_data %>% 
+  select(age, place_birth_canada, sex, province, education)
+census_data = na.omit(census_data)
+
+#set.seed(9531)
+#census_sample <- sample_n(census_data, 3779, replace = FALSE)
+#glimpse(census_data)
+#census_sample$estimate <- m1 %>% predict(newdata = census_sample)
+#head(census_sample)
+
+```
+The online survey data was obtained from the Canadian Election Study website. This dataset contained two parts, CPS and PES, these are sent out through online platform. CPS was done before the election from september 13 to october 21 2019. PES was done after the elction from october 24 to november 11 2019. The target population of this survey was all Canadian citizen and permanent resident who were age of 18 or older. Moreover the CPS contains 37,822 respondent and 10,337 of these respondent was randomly selected after the election to participate in the PES(post election) survey. This survey tried to aim for 50-50 men and women and balance age group and regions in order to make the sample size more representitive. 
+
+Critiria in data cleaning process:
+respondent who are inelgible; meaning they are not Canadian or PR, or not meeting the age requirement.
+respondent who didn't complete the survey was removed.
+respondents who finished the survey in a very short period of time was removed, this would helps the result to remain quality.
+
+
+### Result
+
+### Discussion and Limitations
+
+### Reference
+1. Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, "2019 Canadian Election Study - Online Survey", https://doi.org/10.7910/DVN/DUS88V, Harvard Dataverse, V1
